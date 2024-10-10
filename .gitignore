@@ -50,3 +50,11 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+.vscode/tasks.json
+.vscode/launch.json
+sequential/decrypted_image.png
+sequential/encrypted_image.bin
+sequential/encrypted_image.png
+sequential/input_image.png
+sequential/massive_encrypted_image.png
+sequential/PNGdecrypted_image.png

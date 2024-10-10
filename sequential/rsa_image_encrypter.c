@@ -73,6 +73,20 @@ void readEncryptedDataFromFile(const char *filename, long long *encryptedData, i
     fclose(file);
 }
 
+void splitLongLongIntoBytes(long long value, unsigned char *output) {
+    for (int i = 0; i < 8; i++) {
+        output[i] = (unsigned char)((value >> (i * 8)) & 0xFF);
+    }
+}
+
+long long mergeBytesIntoLongLong(const unsigned char *bytes) {
+    long long value = 0;
+    for (int i = 0; i < 8; i++) {
+        value |= ((long long)bytes[i] << (i * 8));
+    }
+    return value;
+}
+
 int main() {
     // Load image
     int width, height, channels;
@@ -122,11 +136,25 @@ int main() {
     printf("Encrypted data written to 'encrypted_image.bin'.\n");
 
     // Display encrypted data (optional)
-    printf("Encrypted pixel values:\n");
+    // printf("Encrypted pixel values:\n");
+    // for (int i = 0; i < totalPixels; i++) {
+    //     printf("%lld ", encryptedData[i]);
+    // }
+    // printf("\n");
+
+    int encryptedImageWidth = width * channels * 8;
+    int encryptedImageHeight = height;
+
+    // Allocate memory for the new "massive" image
+    unsigned char *encryptedImageData = (unsigned char *)malloc(encryptedImageWidth * encryptedImageHeight * sizeof(unsigned char));
+
+    // Store the encrypted data into the massive image by splitting each long long value into 8 bytes
     for (int i = 0; i < totalPixels; i++) {
-        printf("%lld ", encryptedData[i]);
+        splitLongLongIntoBytes(encryptedData[i], &encryptedImageData[i * 8]);
     }
-    printf("\n");
+    stbi_write_png("massive_encrypted_image.png", encryptedImageWidth, encryptedImageHeight, channels, encryptedImageData, encryptedImageWidth);
+    printf("Encrypted data written to 'massive_encrypted_image.png'.\n");
+
 
     // Read encrypted data back from the file (if needed)
     long long *readEncryptedData = (long long *)malloc(totalPixels * sizeof(long long));
