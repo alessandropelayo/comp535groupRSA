@@ -7,7 +7,55 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <math.h>  // Include math.h for pow()
+#include <time.h>
+
+// function to find primes within 250 stored in prime array
+void primefiller(int prime[], int *primeCount) {
+    bool seive[250];
+    for (int i = 0; i < 250; i++) {
+        seive[i] = true;
+    }
+    seive[0] = false; // 0 is not prime
+    seive[1] = false; // 1 is not prime
+
+    // Sieve of Eratosthenes
+    for (int i = 2; i < 250; i++) {
+        if (seive[i]) {
+            for (int j = i * 2; j < 250; j += i) {
+                seive[j] = false; // multiples of i are not prime
+            }
+        }
+    }
+
+    // collecting prime numbers
+    *primeCount = 0;
+    for (int i = 0; i < 250; i++) {
+        if (seive[i]) {
+            prime[*primeCount] = i;
+            (*primeCount)++;
+        }
+    }
+}
+
+//function to pick a random prime from the prime array
+int pickrandomprime(int prime[], int *primeCount) {
+    if (*primeCount == 0) {
+        return -1; // No primes available
+    }
+
+    int k = rand() % (*primeCount);
+    int selected = prime[k];
+
+    // remove the selected prime from prime array
+    for (int i = k; i < *primeCount - 1; i++) {
+        prime[i] = prime[i + 1];
+    }
+    (*primeCount)--;
+
+    return selected;
+}
 
 // find greatest common divisor
 int gcd(int a, int b) {
@@ -17,6 +65,38 @@ int gcd(int a, int b) {
         a = t;
     }
     return a;
+}
+
+//function to create pubic and private keys
+void setkeys(int primes[], int primeCount, long long *public_key, long long *private_key, long long *n) {
+    int prime1 = pickrandomprime(primes, &primeCount); // first prime number
+    int prime2 = pickrandomprime(primes, &primeCount); // second prime number
+    printf("Prime P: %d\n", prime1);
+    printf("Prime Q: %d\n", prime2);
+
+    *n = prime1 * prime2;
+    printf("N: %lld\n", *n);
+    int fi = (prime1 - 1) * (prime2 - 1);
+    
+    // find public exponent e
+    int e = 2;
+    while (1) {
+        if (gcd(e, fi) == 1) {
+            break;
+        }
+        e++;
+    }
+    *public_key = e;
+
+    // find private exponent d
+    int d = 2;
+    while (1) {
+        if ((d * e) % fi == 1) {
+            break;
+        }
+        d++;
+    }
+    *private_key = d;
 }
 
 // find (base^exp) % mod
@@ -74,6 +154,9 @@ void readEncryptedDataFromFile(const char *filename, long long *encryptedData, i
 }
 
 int main() {
+    // Seed the random number generator
+    srand(time(NULL));
+
     // Load image
     int width, height, channels;
     unsigned char *imageData = stbi_load("input_image.png", &width, &height, &channels, 0);
@@ -82,30 +165,16 @@ int main() {
         return -1;
     }
 
-    // Prime numbers p and q
-    int p = 61;
-    int q = 53;
+    int primes[250];
+    int primeCount;
+    primefiller(primes, &primeCount);
 
-    // Calculate n and φ(n)
-    int n = p * q;
-    int phi = (p - 1) * (q - 1);
-
-    // e is the public key, (1 < e < φ(n) and gcd(e, φ(n)) = 1)
-    int e = 17;
-    while (gcd(e, phi) != 1) {
-        e++;
-    }
-
-    // Calculate private key 'd' (d = modInverse(e, φ(n)))
-    int d = modInverse(e, phi);
-    if (d == -1) {
-        printf("Couldn't find the modInverse\n");
-        return -1;
-    }
+    long long public_key, private_key, n;
+    setkeys(primes, primeCount, &public_key, &private_key, &n);
 
     // Display keys
-    printf("Public Key: e = %d, n = %d\n", e, n);
-    printf("Private Key: d = %d, n = %d\n", d, n);
+    printf("Public Key: e = %lld, n = %lld\n", public_key, n);
+    printf("Private Key: d = %lld, n = %lld\n", private_key, n);
 
     // Prepare data for encryption
     int totalPixels = width * height * channels;
@@ -114,19 +183,22 @@ int main() {
 
     // Encrypt each pixel's color values
     for (int i = 0; i < totalPixels; i++) {
-        encryptedData[i] = encrypt(imageData[i], e, n);
+        encryptedData[i] = encrypt(imageData[i], public_key, n);
     }
+
+    // Save the encrypted image
+    stbi_write_png("encrypted_image.png", width, height, channels, encryptedData, width * channels);
 
     // Write encrypted data to a binary file
     writeEncryptedDataToFile("encrypted_image.bin", encryptedData, totalPixels);
     printf("Encrypted data written to 'encrypted_image.bin'.\n");
 
     // Display encrypted data (optional)
-    printf("Encrypted pixel values:\n");
-    for (int i = 0; i < totalPixels; i++) {
-        printf("%lld ", encryptedData[i]);
-    }
-    printf("\n");
+    // printf("Encrypted pixel values:\n");
+    // for (int i = 0; i < totalPixels; i++) {
+    //     printf("%lld ", encryptedData[i]);
+    // }
+    // printf("\n");
 
     // Read encrypted data back from the file (if needed)
     long long *readEncryptedData = (long long *)malloc(totalPixels * sizeof(long long));
@@ -134,7 +206,7 @@ int main() {
 
     // Decrypt each pixel's color values
     for (int i = 0; i < totalPixels; i++) {
-        decryptedData[i] = decrypt(readEncryptedData[i], d, n);
+        decryptedData[i] = decrypt(readEncryptedData[i], private_key, n);
     }
 
     // Save the decrypted image
