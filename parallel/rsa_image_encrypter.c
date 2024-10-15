@@ -195,13 +195,6 @@ int main() {
     writeEncryptedDataToFile("encrypted_image.bin", encryptedData, totalPixels);
     printf("Encrypted data written to 'encrypted_image.bin'.\n");
 
-    // Display encrypted data (optional)
-    // printf("Encrypted pixel values:\n");
-    // for (int i = 0; i < totalPixels; i++) {
-    //     printf("%lld ", encryptedData[i]);
-    // }
-    // printf("\n");
-
     // Read encrypted data back from the file (if needed)
     long long *readEncryptedData = (long long *)malloc(totalPixels * sizeof(long long));
     readEncryptedDataFromFile("encrypted_image.bin", readEncryptedData, totalPixels);
