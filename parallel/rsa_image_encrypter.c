@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <math.h>  // Include math.h for pow()
 #include <time.h>
+#include <omp.h>
 
 // function to find primes within 250 stored in prime array
 void primefiller(int prime[], int *primeCount) {
@@ -182,6 +183,7 @@ int main() {
     unsigned char *decryptedData = (unsigned char *)malloc(totalPixels * sizeof(unsigned char));
 
     // Encrypt each pixel's color values
+    #pragma omp parallel for
     for (int i = 0; i < totalPixels; i++) {
         encryptedData[i] = encrypt(imageData[i], public_key, n);
     }
@@ -205,6 +207,7 @@ int main() {
     readEncryptedDataFromFile("encrypted_image.bin", readEncryptedData, totalPixels);
 
     // Decrypt each pixel's color values
+    #pragma omp parallel for
     for (int i = 0; i < totalPixels; i++) {
         decryptedData[i] = decrypt(readEncryptedData[i], private_key, n);
     }
