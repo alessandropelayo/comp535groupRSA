@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <string.h>
 
 int main() {
     const char *folderPath = "./data/flowers/";
@@ -23,11 +24,11 @@ int main() {
         char filePath[256];
         snprintf(filePath, sizeof(filePath), "%s%s", folderPath, entry->d_name);
 
-        // Prepare the command to call the image_loader with the file path
+        // Prepare the command to call the rsa_encrypter with the file path
         char command[300];
         snprintf(command, sizeof(command), "./rsa_image_encrypter %s", filePath);
 
-        // Call the image loader program
+        // Call the program
         int result = system(command);
 
         // Check for errors in running the command
