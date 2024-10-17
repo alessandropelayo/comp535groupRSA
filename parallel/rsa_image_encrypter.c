@@ -12,30 +12,40 @@
 #include <time.h>
 #include <omp.h>
 
-// function to find primes within 250 stored in prime array
-void primefiller(int prime[], int *primeCount) {
-    bool seive[250];
-    for (int i = 0; i < 250; i++) {
+// function to find primes within bound stored in prime array
+void primefiller(int bound, int prime[], int *primeCount) {
+    // initialize the seive
+    bool seive[bound];
+    #pragma omp parallel for
+    for (int i = 0; i < bound; i++) {
         seive[i] = true;
     }
     seive[0] = false; // 0 is not prime
     seive[1] = false; // 1 is not prime
 
     // Sieve of Eratosthenes
-    for (int i = 2; i < 250; i++) {
+    #pragma omp parallel for
+    for (int i = 2; i < bound; i++) {
         if (seive[i]) {
-            for (int j = i * 2; j < 250; j += i) {
-                seive[j] = false; // multiples of i are not prime
+            for (int j = i * 2; j < bound; j += i) {
+                #pragma omp critical
+                {
+                    seive[j] = false; // multiples of i are not prime
+                }
             }
         }
     }
 
     // collecting prime numbers
     *primeCount = 0;
-    for (int i = 0; i < 250; i++) {
+    #pragma omp parallel for
+    for (int i = 0; i < bound; i++) {
         if (seive[i]) {
-            prime[*primeCount] = i;
-            (*primeCount)++;
+            #pragma omp critical
+                {
+                    prime[*primeCount] = i;
+                    (*primeCount)++;
+                }
         }
     }
 }
@@ -157,6 +167,15 @@ void readEncryptedDataFromFile(const char *filename, long long *encryptedData, i
 int main() {
     // Seed the random number generator
     srand(time(NULL));
+    
+    // get the number of threads
+    #pragma omp parallel
+    {
+        int num_threads = omp_get_num_threads();
+        int thread_id = omp_get_thread_num();
+
+        printf("Thread %d of %d\n", thread_id, num_threads);
+    }
 
     // Load image
     int width, height, channels;
@@ -166,9 +185,10 @@ int main() {
         return -1;
     }
 
-    int primes[250];
+    int bound = 250;
+    int primes[bound];
     int primeCount;
-    primefiller(primes, &primeCount);
+    primefiller(bound, primes, &primeCount);
 
     long long public_key, private_key, n;
     setkeys(primes, primeCount, &public_key, &private_key, &n);
