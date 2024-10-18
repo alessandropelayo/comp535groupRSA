@@ -164,7 +164,13 @@ void readEncryptedDataFromFile(const char *filename, long long *encryptedData, i
     fclose(file);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+
+    if (argc < 2) {
+        printf("Use program: %s <image_file>\n", argv[0]);
+        return -1;
+    }
+
     // Seed the random number generator
     srand(time(NULL));
     
@@ -179,7 +185,7 @@ int main() {
 
     // Load image
     int width, height, channels;
-    unsigned char *imageData = stbi_load("input_image.png", &width, &height, &channels, 0);
+    unsigned char *imageData = stbi_load(argv[1], &width, &height, &channels, 0);
     if (imageData == NULL) {
         printf("Error in loading the image\n");
         return -1;
