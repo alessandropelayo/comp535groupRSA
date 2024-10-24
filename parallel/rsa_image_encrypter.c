@@ -11,6 +11,8 @@
 #include <math.h>  // Include math.h for pow()
 #include <time.h>
 #include <omp.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 // function to find primes within bound stored in prime array
 void primefiller(int bound, int prime[], int *primeCount) {
@@ -164,7 +166,13 @@ void readEncryptedDataFromFile(const char *filename, long long *encryptedData, i
     fclose(file);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+
+    if (argc < 2) {
+        printf("Use program: %s <image_file>\n", argv[0]);
+        return -1;
+    }
+
     // Seed the random number generator
     srand(time(NULL));
     
@@ -179,7 +187,7 @@ int main() {
 
     // Load image
     int width, height, channels;
-    unsigned char *imageData = stbi_load("input_image.png", &width, &height, &channels, 0);
+    unsigned char *imageData = stbi_load(argv[1], &width, &height, &channels, 0);
     if (imageData == NULL) {
         printf("Error in loading the image\n");
         return -1;
@@ -209,29 +217,35 @@ int main() {
     }
 
     // Save the encrypted image
-    stbi_write_png("encrypted_image.png", width, height, channels, encryptedData, width * channels);
+    char encryptedFileName[256];
+    snprintf(encryptedFileName, sizeof(encryptedFileName), "%s_encrypted.png", argv[1]);
+    stbi_write_png(encryptedFileName, width, height, channels, encryptedData, width * channels);
+    printf("Encrypted image saved to '%s'.\n", encryptedFileName);
 
     // Write encrypted data to a binary file
-    writeEncryptedDataToFile("encrypted_image.bin", encryptedData, totalPixels);
-    printf("Encrypted data written to 'encrypted_image.bin'.\n");
+    // writeEncryptedDataToFile("encrypted_image.bin", encryptedData, totalPixels);
+    // printf("Encrypted data written to 'encrypted_image.bin'.\n");
 
-    // Read encrypted data back from the file (if needed)
-    long long *readEncryptedData = (long long *)malloc(totalPixels * sizeof(long long));
-    readEncryptedDataFromFile("encrypted_image.bin", readEncryptedData, totalPixels);
+    // // Read encrypted data back from the file (if needed)
+    // long long *readEncryptedData = (long long *)malloc(totalPixels * sizeof(long long));
+    // readEncryptedDataFromFile("encrypted_image.bin", readEncryptedData, totalPixels);
 
     // Decrypt each pixel's color values
     #pragma omp parallel for
     for (int i = 0; i < totalPixels; i++) {
-        decryptedData[i] = decrypt(readEncryptedData[i], private_key, n);
+        decryptedData[i] = decrypt(encryptedData[i], private_key, n);
     }
 
     // Save the decrypted image
-    stbi_write_png("decrypted_image.png", width, height, channels, decryptedData, width * channels);
+    char decryptedFileName[256];
+    snprintf(decryptedFileName, sizeof(decryptedFileName), "%s_decrypted.png", argv[1]);
+    stbi_write_png(decryptedFileName, width, height, channels, decryptedData, width * channels);
+    printf("Decrypted image saved to '%s'.\n", decryptedFileName);
 
     // Free allocated memory
     free(encryptedData);
     free(decryptedData);
-    free(readEncryptedData);
+    // free(readEncryptedData);
     stbi_image_free(imageData);
 
     printf("Image encryption and decryption completed successfully.\n");
