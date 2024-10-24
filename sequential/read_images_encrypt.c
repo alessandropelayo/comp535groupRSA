@@ -4,7 +4,8 @@
 #include <string.h>
 
 int main() {
-    const char *folders[] = {"./data/flowers/", "./data/dogs/", "./data/cats/", "./data/horses/", "./data/human/"};
+    // const char *folders[] = {"./data/flowers/", "./data/dogs/", "./data/cats/", "./data/horses/", "./data/human/"};
+    const char *folders[] = {"./data/flowers/"};
     int numFolders = sizeof(folders) / sizeof(folders[0]);
 
 
@@ -29,7 +30,9 @@ int main() {
 
             // Prepare the command to call the rsa_encrypter with the file path
             char command[300];
+            printf("Executing command: %s\n", command);
             snprintf(command, sizeof(command), "./rsa_image_encrypter %s", filePath);
+            // snprintf(command, sizeof(command), "rsa_image_encrypter %s", filePath); // testing on windows
 
             // Call the program
             int result = system(command);

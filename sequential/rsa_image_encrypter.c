@@ -10,6 +10,8 @@
 #include <stdbool.h>
 #include <math.h>  // Include math.h for pow()
 #include <time.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 // function to find primes within 250 stored in prime array
 void primefiller(int prime[], int *primeCount) {
@@ -207,11 +209,14 @@ int main(int argc, char *argv[]) {
     }
 
     // Save the encrypted image
-    stbi_write_png("encrypted_image.png", width, height, channels, encryptedData, width * channels);
+    char encryptedFileName[256];
+    snprintf(encryptedFileName, sizeof(encryptedFileName), "%s_encrypted.png", argv[1]);
+    stbi_write_png(encryptedFileName, width, height, channels, encryptedData, width * channels);
+    printf("Encrypted image saved to '%s'.\n", encryptedFileName);
 
     // Write encrypted data to a binary file
-    writeEncryptedDataToFile("encrypted_image.bin", encryptedData, totalPixels);
-    printf("Encrypted data written to 'encrypted_image.bin'.\n");
+    // writeEncryptedDataToFile("encrypted_image.bin", encryptedData, totalPixels);
+    // printf("Encrypted data written to 'encrypted_image.bin'.\n");
 
     // Display encrypted data (optional)
     // printf("Encrypted pixel values:\n");
@@ -221,21 +226,23 @@ int main(int argc, char *argv[]) {
     // printf("\n");
 
     // Read encrypted data back from the file (if needed)
-    long long *readEncryptedData = (long long *)malloc(totalPixels * sizeof(long long));
-    readEncryptedDataFromFile("encrypted_image.bin", readEncryptedData, totalPixels);
+    // long long *readEncryptedData = (long long *)malloc(totalPixels * sizeof(long long));
+    // readEncryptedDataFromFile("encrypted_image.bin", readEncryptedData, totalPixels);
 
     // Decrypt each pixel's color values
     for (int i = 0; i < totalPixels; i++) {
-        decryptedData[i] = decrypt(readEncryptedData[i], private_key, n);
+        decryptedData[i] = decrypt(encryptedData[i], private_key, n);
     }
 
     // Save the decrypted image
-    stbi_write_png("decrypted_image.png", width, height, channels, decryptedData, width * channels);
+    char decryptedFileName[256];
+    snprintf(decryptedFileName, sizeof(decryptedFileName), "%s_decrypted.png", argv[1]);
+    stbi_write_png(decryptedFileName, width, height, channels, decryptedData, width * channels);
+    printf("Decrypted image saved to '%s'.\n", decryptedFileName);
 
     // Free allocated memory
     free(encryptedData);
     free(decryptedData);
-    free(readEncryptedData);
     stbi_image_free(imageData);
 
     printf("Image encryption and decryption completed successfully.\n");

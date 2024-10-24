@@ -5,7 +5,8 @@
 
 // THIS FILE CURRENTLY HAS NO PARALLEL PROGRAMING
 int main() {
-    const char *folders[] = {"./data/flowers/", "./data/dogs/", "./data/cats/", "./data/horses/", "./data/human/"};
+    // const char *folders[] = {"./data/flowers/", "./data/dogs/", "./data/cats/", "./data/horses/", "./data/human/"};
+    const char *folders[] = {"./data/flowers/", "./data/dogs/"};
     int numFolders = sizeof(folders) / sizeof(folders[0]);
 
 
