@@ -218,7 +218,18 @@ int main(int argc, char *argv[]) {
 
     // Save the encrypted image
     char encryptedFileName[256];
-    snprintf(encryptedFileName, sizeof(encryptedFileName), "%s_encrypted.png", argv[1]);
+    const char *filePath = argv[1];
+
+    const char *fileName = strrchr(filePath, '/');
+    if (fileName) {
+        fileName++; // Move past the '/'
+    } else {
+        fileName = filePath; // No '/' found, use the full string
+    }
+
+    // Extract the filename from the path
+    snprintf(encryptedFileName, sizeof(encryptedFileName), "./encrypted/%s_encrypted.png", fileName);
+    //snprintf(encryptedFileName, sizeof(encryptedFileName), "encrypted/%s_encrypted.png", fileName);
     stbi_write_png(encryptedFileName, width, height, channels, encryptedData, width * channels);
     printf("Encrypted image saved to '%s'.\n", encryptedFileName);
 
@@ -238,7 +249,8 @@ int main(int argc, char *argv[]) {
 
     // Save the decrypted image
     char decryptedFileName[256];
-    snprintf(decryptedFileName, sizeof(decryptedFileName), "%s_decrypted.png", argv[1]);
+    snprintf(decryptedFileName, sizeof(decryptedFileName), "./decrypted/%s_decrypted.png", fileName);
+    //snprintf(decryptedFileName, sizeof(decryptedFileName), "decrypted/%s_decrypted.png", fileName);
     stbi_write_png(decryptedFileName, width, height, channels, decryptedData, width * channels);
     printf("Decrypted image saved to '%s'.\n", decryptedFileName);
 

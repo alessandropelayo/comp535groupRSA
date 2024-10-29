@@ -59,3 +59,8 @@ sequential/input_image.png
 sequential/massive_encrypted_image.png
 sequential/PNGdecrypted_image.png
 /sequential/data
+/parallel/data
+/parallel/encrypted
+/parallel/decrypted
+/sequential/encrypted
+/sequential/decrypted
