@@ -10,10 +10,10 @@ find_package(OpenMP REQUIRED)
 # Set SOURCES variable to all source files in /src directory.
 file(GLOB SOURCES "src/*.cpp" "src/*.c" "src/*.cu")
 
-add_executable(img_handler ${SOURCES})
+add_executable(cuda_encrypter ${SOURCES})
 
 # Link the OpenMP library
-target_link_libraries(img_handler PUBLIC OpenMP::OpenMP_CXX)
+target_link_libraries(cuda_encrypter PUBLIC OpenMP::OpenMP_CXX)
 
 # Link the math library in src/rsa_keygen.c
-target_link_libraries(img_handler PUBLIC m)
+target_link_libraries(cuda_encrypter PUBLIC m)
