@@ -64,3 +64,19 @@ sequential/PNGdecrypted_image.png
 /parallel/decrypted
 /sequential/encrypted
 /sequential/decrypted
+
+# Folders
+/data
+/.vscode
+/build
+/parallel
+/sequential
+/results
+cuda/cuda_image_encrypter
+parallel/read_images_encrypt
+parallel/rsa_image_encrypter
+cuda/test_cuda_file.cu
+cuda/image_loader
+cuda/output.txt
+cuda/Image
+cuda/output.jpg
