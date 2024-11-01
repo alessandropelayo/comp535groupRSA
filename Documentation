@@ -1,3 +1,27 @@
+Here’s a detailed document covering RSA encryption and the differences between parallel and sequential processing, suited for a GitHub contribution. You can further customize the content to match any specific requirements for your repository.
+
+RSA Encryption and Parallel vs. Sequential Processing
+
+Table of Contents
+
+	1.	Introduction to Cryptography
+	2.	Overview of RSA Encryption
+	•	Key Generation
+	•	Encryption Process
+	•	Decryption Process
+	3.	Security of RSA Encryption
+	•	Mathematical Foundations
+	•	Prime Factorization Problem
+	4.	Parallel vs. Sequential Processing
+	•	Definitions
+	•	Parallel Processing in RSA
+	•	Sequential Processing in RSA
+	5.	Performance Comparison
+	6.	Applications of RSA in Parallel and Sequential Systems
+	7.	Conclusion
+	8.	References
+
+
 Introduction to Cryptography
 
 Cryptography is the science of securing information through mathematical techniques. Its applications range from data encryption in daily online transactions to safeguarding state secrets. Cryptography ensures confidentiality, integrity, authentication, and non-repudiation of data. The RSA encryption algorithm is one of the most widely used public-key cryptosystems, primarily because of its robustness and security.
