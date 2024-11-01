@@ -1,0 +1,101 @@
+Introduction to Cryptography
+
+Cryptography is the science of securing information through mathematical techniques. Its applications range from data encryption in daily online transactions to safeguarding state secrets. Cryptography ensures confidentiality, integrity, authentication, and non-repudiation of data. The RSA encryption algorithm is one of the most widely used public-key cryptosystems, primarily because of its robustness and security.
+
+Overview of RSA Encryption
+
+The RSA algorithm, named after its inventors (Rivest, Shamir, and Adleman), is a widely recognized public-key encryption technique. It relies on the computational complexity of prime factorization, making it secure against brute-force attacks under current technology constraints.
+
+Key Generation
+
+	1.	Choose two large prime numbers, p and q.
+	2.	Compute the modulus, ￼. The modulus n is used as part of the public and private keys.
+	3.	Calculate the totient: ￼.
+	4.	Choose a public exponent, e, where ￼ and e is coprime with ￼.
+	5.	Compute the private key exponent, d, which satisfies \( d \times e \equiv 1 \pmod{\phi(n)} \).
+	6.	The public key is (n, e), and the private key is d.
+
+Encryption Process
+
+To encrypt a message M, convert it into a numerical format where M < n. Then:
+
+￼
+
+where C is the encrypted message (ciphertext).
+
+Decryption Process
+
+To decrypt the ciphertext C with the private key d:
+
+￼
+
+The result is the original message M.
+
+Security of RSA Encryption
+
+Mathematical Foundations
+
+The security of RSA relies on the difficulty of factoring large composite numbers. Given a product n = p * q with p and q as large primes, it’s computationally challenging to retrieve p and q from n.
+
+Prime Factorization Problem
+
+The factorization of a large number is a computationally intensive task, especially as the bit-length of n increases. RSA keys are usually 2048-bit or longer, which provides significant security by making factorization infeasible with current technology.
+
+Parallel vs. Sequential Processing
+
+Definitions
+
+	•	Parallel Processing: A technique where multiple computations occur simultaneously, leveraging multiple processors or cores to achieve faster results.
+	•	Sequential Processing: Computation occurs in a step-by-step manner, where each operation must complete before the next one starts.
+
+Parallel Processing in RSA
+
+In RSA encryption and decryption, parallel processing can be beneficial, particularly in environments where multiple RSA operations must be performed. By splitting the workload across multiple cores or processors, tasks such as key generation, encryption, and decryption can be executed faster.
+
+Advantages of Parallel Processing in RSA:
+
+	1.	Efficiency: RSA key generation, which requires finding large primes and calculating modular inverses, can be significantly accelerated.
+	2.	Scalability: Parallel algorithms can handle larger datasets and operations, such as encrypting multiple messages concurrently.
+	3.	Resource Optimization: Multiple processors can be utilized to enhance throughput, which is valuable in high-performance systems.
+
+Sequential Processing in RSA
+
+Sequential processing remains effective for RSA due to its inherent simplicity and low overhead in cases where operations are single-threaded or small-scale.
+
+Advantages of Sequential Processing in RSA:
+
+	1.	Lower Complexity: Sequential processing reduces the overhead associated with managing multiple threads or cores.
+	2.	Reliability: Sequential operations avoid race conditions and synchronization issues, ensuring data consistency.
+
+Performance Comparison
+
+The performance of RSA encryption and decryption under parallel and sequential processing varies based on system resources, message size, and required key strength.
+
+	1.	Key Generation: RSA key generation is CPU-intensive, especially for large keys (2048-bit, 4096-bit). Parallel processing can distribute the load across processors, reducing the time required to find large prime numbers.
+	2.	Encryption and Decryption: Parallel processing is more beneficial when encrypting or decrypting large datasets or multiple messages simultaneously. Sequential processing works adequately for individual messages, but parallel processing offers efficiency for batch processing.
+	3.	Latency and Throughput: Parallel processing generally improves throughput but may introduce latency if thread management is inefficient. Sequential processing, while slower, maintains a predictable latency.
+	4.	Scalability: Parallel systems can scale by adding more processing units, making them more suitable for high-volume environments.
+
+Feature	Parallel Processing	Sequential Processing
+Key Generation	Faster, more efficient for large keys	Slower but simpler
+Encryption/Decryption	Faster for batch processing	Adequate for single messages
+Latency	Variable, depending on thread management	Predictable latency
+Scalability	High	Low
+Complexity	Higher	Lower
+
+Applications of RSA in Parallel and Sequential Systems
+
+	•	Parallel RSA Encryption in Cloud Services: Parallel RSA processing is ideal for cloud-based encryption services, where multiple requests are encrypted and decrypted simultaneously. By using parallel systems, cloud providers can handle more transactions securely.
+	•	Sequential RSA Encryption in Embedded Systems: Many embedded systems, such as IoT devices, use RSA for secure communication. Since these systems often have limited processing power, sequential processing provides a simpler solution for RSA encryption and decryption.
+	•	Batch Processing in Data Centers: Data centers handling sensitive data for multiple clients can utilize parallel RSA to encrypt or decrypt large volumes of data efficiently, thus optimizing overall performance.
+
+Conclusion
+
+RSA encryption remains a foundational technique in modern cryptography, providing secure communication through public-key cryptographic methods. While parallel processing can significantly enhance RSA performance, especially for large datasets or high-frequency encryption tasks, sequential processing offers simplicity and lower overhead. Understanding when to use each method depends on the specific application and resource availability. As technology advances, parallel processing techniques in cryptography will continue to grow, further enhancing the security and efficiency of systems relying on RSA encryption.
+
+References
+
+	1.	Rivest, R. L., Shamir, A., & Adleman, L. (1978). A Method for Obtaining Digital Signatures and Public-Key Cryptosystems. Communications of the ACM, 21(2), 120-126.
+	2.	Menezes, A. J., van Oorschot, P. C., & Vanstone, S. A. (1996). Handbook of Applied Cryptography. CRC Press.
+	3.	Koblitz, N. (1987). A Course in Number Theory and Cryptography. Springer.
+	4.	Stallings, W. (2017). Cryptography and Network Security: Principles and Practice. Pearson.
