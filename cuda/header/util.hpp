@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
+#include <string_view>
 
 extern bool v_flag;
 
-void error(const std::string &err_msg);
-void verbose(const std::string &msg);
+void error(const std::string_view &err_msg);
+void verbose(const std::string_view &msg);
