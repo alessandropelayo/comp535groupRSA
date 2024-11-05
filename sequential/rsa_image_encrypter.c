@@ -189,6 +189,17 @@ void create_folders() {
     }
 }
 
+void encryption_mapping(long long *encryptTable, long long e, long long n) {
+    for (int i = 0; i < 256; i++) {
+        encryptTable[i] = encrypt((unsigned char)i, e, n);
+    }
+}
+void decryption_mapping(unsigned char *decryptTable ,long long d, long long n) {
+    for (int i = 0; i < 256; i++) {
+        decryptTable[i] = decrypt((long long)i, d, n);
+    }
+}
+
 int main(int argc, char *argv[]) {
 
     if (argc < 2) {
@@ -219,6 +230,11 @@ int main(int argc, char *argv[]) {
     // printf("Public Key: e = %lld, n = %lld\n", public_key, n);
     // printf("Private Key: d = %lld, n = %lld\n", private_key, n);
 
+    long long encrypt_table[256];
+    unsigned char decrypt_table[256];
+    encryption_mapping(encrypt_table, public_key, n);
+    decryption_mapping(decrypt_table, private_key, n);
+
     // Prepare data for encryption
     int totalPixels = width * height * channels;
     long long *encryptedData = (long long *)malloc(totalPixels * sizeof(long long));
@@ -226,7 +242,7 @@ int main(int argc, char *argv[]) {
 
     // Encrypt each pixel's color values
     for (int i = 0; i < totalPixels; i++) {
-        encryptedData[i] = encrypt(imageData[i], public_key, n);
+        encryptedData[i] = encrypt_table[imageData[i]];
     }
 
     // Save the encrypted image
@@ -264,7 +280,7 @@ int main(int argc, char *argv[]) {
 
     // Decrypt each pixel's color values
     for (int i = 0; i < totalPixels; i++) {
-        decryptedData[i] = decrypt(encryptedData[i], private_key, n);
+        decryptedData[i] = decrypt_table[imageData[i]];
     }
 
     // Save the decrypted image
