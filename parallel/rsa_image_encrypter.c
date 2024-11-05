@@ -184,13 +184,13 @@ void create_folders() {
 }
 
 void encryption_mapping(long long *encryptTable, long long e, long long n) {
-    #pragma omp parallel for
+    // #pragma omp parallel for
     for (int i = 0; i < 256; i++) {
         encryptTable[i] = encrypt((unsigned char)i, e, n);
     }
 }
 void decryption_mapping(unsigned char *decryptTable ,long long d, long long n) {
-    #pragma omp parallel for
+    // #pragma omp parallel for
     for (int i = 0; i < 256; i++) {
         decryptTable[i] = decrypt((long long)i, d, n);
     }
