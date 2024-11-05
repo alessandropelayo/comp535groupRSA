@@ -18,7 +18,6 @@
 void primefiller(int bound, int prime[], int *primeCount) {
     // initialize the seive
     bool seive[bound];
-    #pragma omp parallel for
     for (int i = 0; i < bound; i++) {
         seive[i] = true;
     }
@@ -26,13 +25,15 @@ void primefiller(int bound, int prime[], int *primeCount) {
     seive[1] = false; // 1 is not prime
 
     // Sieve of Eratosthenes
-    #pragma omp parallel for
-    for (int i = 2; i < bound; i++) {
-        if (seive[i]) {
-            for (int j = i * 2; j < bound; j += i) {
-                #pragma omp critical
-                {
-                    seive[j] = false; // multiples of i are not prime
+    #pragma omp parallel
+    {
+        // int num_threads = omp_get_num_threads();
+        // int thread_id = omp_get_thread_num();
+        #pragma omp for schedule(dynamic) nowait
+        for (int i = 2; i < bound; i++) {
+            if (seive[i]) {
+                for (int j = i * 2; j < bound; j += i) {
+                    seive[j] = false;
                 }
             }
         }
@@ -40,14 +41,10 @@ void primefiller(int bound, int prime[], int *primeCount) {
 
     // collecting prime numbers
     *primeCount = 0;
-    #pragma omp parallel for
     for (int i = 0; i < bound; i++) {
         if (seive[i]) {
-            #pragma omp critical
-                {
-                    prime[*primeCount] = i;
-                    (*primeCount)++;
-                }
+            prime[*primeCount] = i;
+            (*primeCount)++;
         }
     }
 }
