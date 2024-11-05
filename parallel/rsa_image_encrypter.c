@@ -81,11 +81,11 @@ int gcd(int a, int b) {
 void setkeys(int primes[], int primeCount, long long *public_key, long long *private_key, long long *n) {
     int prime1 = pickrandomprime(primes, &primeCount); // first prime number
     int prime2 = pickrandomprime(primes, &primeCount); // second prime number
-    printf("Prime P: %d\n", prime1);
-    printf("Prime Q: %d\n", prime2);
+    // printf("Prime P: %d\n", prime1);
+    // printf("Prime Q: %d\n", prime2);
 
     *n = prime1 * prime2;
-    printf("N: %lld\n", *n);
+    // printf("N: %lld\n", *n);
     int fi = (prime1 - 1) * (prime2 - 1);
     
     // find public exponent e
@@ -163,6 +163,26 @@ void readEncryptedDataFromFile(const char *filename, long long *encryptedData, i
     fclose(file);
 }
 
+void create_folders() {
+    // Directory names
+    const char *encrypted_dir = "encrypted";
+    const char *decrypted_dir = "decrypted";
+
+    // Create the "encrypted" directory
+    if (mkdir(encrypted_dir, 0777) == -1) {
+        // perror("Error creating 'encrypted' directory");
+    } else {
+        // printf("Directory 'encrypted' created successfully.\n");
+    }
+
+    // Create the "decrypted" directory
+    if (mkdir(decrypted_dir, 0777) == -1) {
+        // perror("Error creating 'decrypted' directory");
+    } else {
+        // printf("Directory 'decrypted' created successfully.\n");
+    }
+}
+
 int main(int argc, char *argv[]) {
 
     if (argc < 2) {
@@ -179,7 +199,7 @@ int main(int argc, char *argv[]) {
         int num_threads = omp_get_num_threads();
         int thread_id = omp_get_thread_num();
 
-        printf("Thread %d of %d\n", thread_id, num_threads);
+        // printf("Thread %d of %d\n", thread_id, num_threads);
     }
 
     // Load image
@@ -199,8 +219,8 @@ int main(int argc, char *argv[]) {
     setkeys(primes, primeCount, &public_key, &private_key, &n);
 
     // Display keys
-    printf("Public Key: e = %lld, n = %lld\n", public_key, n);
-    printf("Private Key: d = %lld, n = %lld\n", private_key, n);
+    // printf("Public Key: e = %lld, n = %lld\n", public_key, n);
+    // printf("Private Key: d = %lld, n = %lld\n", private_key, n);
 
     // Prepare data for encryption
     int totalPixels = width * height * channels;
@@ -223,12 +243,13 @@ int main(int argc, char *argv[]) {
     } else {
         fileName = filePath; // No '/' found, use the full string
     }
-
+    
+    create_folders();
     // Extract the filename from the path
-    snprintf(encryptedFileName, sizeof(encryptedFileName), "%s_encrypted.png", fileName);
+    snprintf(encryptedFileName, sizeof(encryptedFileName), "./encrypted/%s_encrypted.png", fileName);
     //snprintf(encryptedFileName, sizeof(encryptedFileName), "encrypted/%s_encrypted.png", fileName);
     stbi_write_png(encryptedFileName, width, height, channels, encryptedData, width * channels);
-    printf("Encrypted image saved to '%s'.\n", encryptedFileName);
+    // printf("Encrypted image saved to '%s'.\n", encryptedFileName);
 
     // Write encrypted data to a binary file
     // writeEncryptedDataToFile("encrypted_image.bin", encryptedData, totalPixels);
@@ -246,10 +267,10 @@ int main(int argc, char *argv[]) {
 
     // Save the decrypted image
     char decryptedFileName[256];
-    snprintf(decryptedFileName, sizeof(decryptedFileName), "%s_decrypted.png", fileName);
+    snprintf(decryptedFileName, sizeof(decryptedFileName), "./decrypted/%s_decrypted.png", fileName);
     //snprintf(decryptedFileName, sizeof(decryptedFileName), "decrypted/%s_decrypted.png", fileName);
     stbi_write_png(decryptedFileName, width, height, channels, decryptedData, width * channels);
-    printf("Decrypted image saved to '%s'.\n", decryptedFileName);
+    // printf("Decrypted image saved to '%s'.\n", decryptedFileName);
 
     // Free allocated memory
     free(encryptedData);
@@ -257,6 +278,6 @@ int main(int argc, char *argv[]) {
     // free(readEncryptedData);
     stbi_image_free(imageData);
 
-    printf("Image encryption and decryption completed successfully.\n");
+    // printf("Image encryption and decryption completed successfully.\n");
     return 0;
 }
