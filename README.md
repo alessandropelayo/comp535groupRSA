@@ -19,6 +19,11 @@ gcc read_images_encrypt.c -o read_images_encrypt
 ./read_images_encrypt
 
 ```
+
+## How to use CUDA
+To compile, use the CMakeLists.txt file given in the cuda directory.
+For usage instructions, use flag -h for help.
+
 ## References
 Sequential version implemented with assistence from https://chatgpt.com/ and https://www.geeksforgeeks.org/rsa-algorithm-cryptography/
 
