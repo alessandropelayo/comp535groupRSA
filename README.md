@@ -21,4 +21,5 @@ gcc read_images_encrypt.c -o read_images_encrypt
 ```
 ## References
 Sequential version implemented with assistence from https://chatgpt.com/ and https://www.geeksforgeeks.org/rsa-algorithm-cryptography/
+
 Sieve of Eratosthenes referenced from https://www.geeksforgeeks.org/sieve-of-eratosthenes/
