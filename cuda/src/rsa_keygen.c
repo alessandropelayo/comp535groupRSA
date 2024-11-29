@@ -1,13 +1,13 @@
+#include "rsa_keygen.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include <math.h>  // Include math.h for pow()
 #include <time.h>
-#include <omp.h>
 
 // function to find primes within bound stored in prime array
-void primefiller(int bound, int prime[], int *primeCount) {
+void static primefiller(int bound, int prime[], int *primeCount) {
     // initialize the seive
     bool seive[bound];
     #pragma omp parallel for
@@ -45,7 +45,7 @@ void primefiller(int bound, int prime[], int *primeCount) {
 }
 
 //function to pick a random prime from the prime array
-int pickrandomprime(int prime[], int *primeCount) {
+int static pickrandomprime(int prime[], int *primeCount) {
     if (*primeCount == 0) {
         return -1; // No primes available
     }
@@ -63,7 +63,7 @@ int pickrandomprime(int prime[], int *primeCount) {
 }
 
 // find greatest common divisor
-int gcd(int a, int b) {
+int static gcd(int a, int b) {
     while (b != 0) {
         int t = b;
         b = a % b;
@@ -73,7 +73,7 @@ int gcd(int a, int b) {
 }
 
 //function to create pubic and private keys
-void setkeys(int primes[], int primeCount, long long *public_key, long long *private_key, long long *n) {
+void static setkeys(int primes[], int primeCount, long long *public_key, long long *private_key, long long *n) {
     int prime1 = pickrandomprime(primes, &primeCount); // first prime number
     int prime2 = pickrandomprime(primes, &primeCount); // second prime number
     printf("Prime P: %d\n", prime1);
@@ -82,7 +82,7 @@ void setkeys(int primes[], int primeCount, long long *public_key, long long *pri
     *n = prime1 * prime2;
     printf("N: %lld\n", *n);
     int fi = (prime1 - 1) * (prime2 - 1);
-    
+
     // find public exponent e
     int e = 2;
     while (1) {
@@ -105,7 +105,7 @@ void setkeys(int primes[], int primeCount, long long *public_key, long long *pri
 }
 
 // find modular inverse of e under mod φ(n)
-int modInverse(int e, int phi) {
+int static modInverse(int e, int phi) {
     for (int x = 1; x < phi; x++) {
         if ((e * x) % phi == 1)
             return x;
@@ -113,7 +113,8 @@ int modInverse(int e, int phi) {
     return -1;
 }
 
-void generateKeys(long long *public_key, long long *n) {
+void generateKeys(long long* public_key, long long* n) {
+    printf("Generating keys...\n");
     srand(time(NULL));
 
     int bound = 250;
@@ -127,5 +128,5 @@ void generateKeys(long long *public_key, long long *n) {
     // Display keys
     printf("Public Key: e = %lld, n = %lld\n", *public_key, *n);
     printf("Private Key: d = %lld, n = %lld\n", private_key, *n);
-
+    printf("------------------------------\n");
 }

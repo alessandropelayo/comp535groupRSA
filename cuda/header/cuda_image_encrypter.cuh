@@ -1,5 +1,5 @@
 #pragma once
 
-#include "image_handler.hpp"
+#include "image.hpp"
 
-void setup_kernel(Image &image, long long public_key, long long n);
+void gpu_encrypt_image(Image& image, long long public_key, long long n);

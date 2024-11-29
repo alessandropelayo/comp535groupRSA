@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.28)
 project(Parallel_RSA VERSION 1.0.0)
 
-# Specify to compile in C++ 17
-set(CMAKE_CXX_STANDARD 17)
+# Specify to compile in C++ 20
+set(CMAKE_CXX_STANDARD 20)
 
 # Specify to build in a Release configuration
 set(CMAKE_BUILD_TYPE Release)

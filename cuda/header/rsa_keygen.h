@@ -2,9 +2,9 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif    
+#endif
 
-void generateKeys(long long *public_key, long long *n);
+    void generateKeys(long long* public_key, long long* n);
 
 #ifdef __cplusplus
 }
